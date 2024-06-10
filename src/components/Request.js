@@ -1,7 +1,7 @@
 import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
 import Web3 from 'web3';
 
-import { closeRequest } from '@/services/Web3Service';
+import { closeRequest, donate } from '@/services/Web3Service';
 
 export function Request({ data }) {
   function handleCloseRequest() {
@@ -22,7 +22,23 @@ export function Request({ data }) {
       });
   }
 
-  function handleHelpToRequest() {}
+  function handleHelpToRequest() {
+    const donationInBnb = prompt('How much do you want to donate (in BNB)?', 0);
+
+    donate(data.id, donationInBnb)
+      .then((result) => {
+        alert(
+          'Donation sent successfully. In a few minutes it will be processed!'
+        );
+
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error(error);
+
+        alert(error.message);
+      });
+  }
 
   return (
     <>
