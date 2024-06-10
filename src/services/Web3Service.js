@@ -19,7 +19,7 @@ export async function doLogin() {
   return accounts[0];
 }
 
-export async function getOpenRequests(lastId = 0) {
+function getContract() {
   if (!window.ethereum)
     throw new Error('Metamask ethereum wallet is not available!');
 
@@ -27,13 +27,25 @@ export async function getOpenRequests(lastId = 0) {
 
   const web3 = new Web3(window.ethereum);
 
-  const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS, {
+  return new web3.eth.Contract(ABI, CONTRACT_ADDRESS, {
     authenticatedUserWallet,
   });
+}
+
+export async function getOpenRequests(lastId = 0) {
+  const contract = getContract();
 
   const requests = await contract.methods
     .getOpenRequests(lastId + 1, 10)
     .call();
 
   return requests.filter((request) => request.title !== '');
+}
+
+export async function openRequest({ title, description, contact, goal }) {
+  const contract = getContract();
+
+  return contract.methods
+    .openRequest(title, description, contact, Web3.utils.toWei(goal, 'ether'))
+    .send();
 }
