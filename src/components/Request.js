@@ -1,7 +1,29 @@
 import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
 import Web3 from 'web3';
 
+import { closeRequest } from '@/services/Web3Service';
+
 export function Request({ data }) {
+  function handleCloseRequest() {
+    if (!confirm('Are you want to close this request?')) return;
+
+    closeRequest(data.id)
+      .then((result) => {
+        alert(
+          'Order closed successfully. In a few minutes it will no longer be seen on the website!'
+        );
+
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error(error);
+
+        alert(error.message);
+      });
+  }
+
+  function handleHelpToRequest() {}
+
   return (
     <>
       <div className="list-group-item list-group-item-action d-flex gap-3 py-3">
@@ -23,11 +45,19 @@ export function Request({ data }) {
                 <div className="text-end">
                   {localStorage.getItem('wallet') ===
                   data.author.toLowerCase() ? (
-                    <button type="button" className="btn btn-danger btn-sm">
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-sm"
+                      onClick={handleCloseRequest}
+                    >
                       Close
                     </button>
                   ) : (
-                    <button type="button" className="btn btn-success btn-sm">
+                    <button
+                      type="button"
+                      className="btn btn-success btn-sm"
+                      onClick={handleHelpToRequest}
+                    >
                       &#36; To help
                     </button>
                   )}
