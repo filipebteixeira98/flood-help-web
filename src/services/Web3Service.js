@@ -55,3 +55,11 @@ export async function closeRequest(id) {
 
   return contract.methods.closeRequest(id).send();
 }
+
+export async function donate(id, donationInBnb) {
+  const contract = getContract();
+
+  return contract.methods.donate(id).send({
+    value: Web3.utils.toWei(donationInBnb, 'ether'),
+  });
+}
