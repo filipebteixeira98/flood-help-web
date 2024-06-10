@@ -28,7 +28,7 @@ function getContract() {
   const web3 = new Web3(window.ethereum);
 
   return new web3.eth.Contract(ABI, CONTRACT_ADDRESS, {
-    authenticatedUserWallet,
+    from: authenticatedUserWallet,
   });
 }
 
@@ -48,4 +48,10 @@ export async function openRequest({ title, description, contact, goal }) {
   return contract.methods
     .openRequest(title, description, contact, Web3.utils.toWei(goal, 'ether'))
     .send();
+}
+
+export async function closeRequest(id) {
+  const contract = getContract();
+
+  return contract.methods.closeRequest(id).send();
 }
